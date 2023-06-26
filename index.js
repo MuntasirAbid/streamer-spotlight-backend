@@ -66,12 +66,13 @@ app.get('/streamers/:streamerId', async (req, res) => {
  try {
   const streamerId = req.params.streamerId;
 
-  const streamer = await collection.findOne({ _id: new mongodb.ObjectId(streamerId) });
+  const query = { _id: new ObjectId(streamerId) }
+  const streamer = await collection.findOne(query)
 
-  if (!streamer) {
-   res.status(404).send('Streamer not found');
-   return;
-  }
+  // if (!streamer) {
+  //  res.status(404).send('Streamer not found');
+  //  return;
+  // }
 
   res.send(streamer);
  } catch (error) {
