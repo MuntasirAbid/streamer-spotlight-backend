@@ -1,13 +1,12 @@
-// //hQD8gC78og2jZnmj
-// //streamer-spotlight
-
 const express = require('express');
 const mongodb = require('mongodb');
+require("colors")
 const { MongoClient, ObjectId } = require('mongodb');
 const cors = require('cors');
 const port = process.env.port || 10000;
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -18,10 +17,10 @@ const client = new MongoClient(mongoUrl);
 async function dbConnect() {
  try {
   await client.connect();
-  console.log("database connected")
+  console.log("Database connected".yellow.italic)
 
  } catch (error) {
-  console.log(error.name, error.message);
+  console.log(error.name, error.message.red.bold);
   res.send({
    success: false,
    error: error.message
@@ -43,7 +42,7 @@ app.post('/streamers', async (req, res) => {
   res.status(201).send('Streamer added successfully');
 
  } catch (error) {
-  console.error('Error adding streamer:', error);
+  console.error('Error adding streamer:', error.red.bold);
   res.status(500).send('Server error');
  }
 });
@@ -56,7 +55,7 @@ app.get('/streamers', async (req, res) => {
   res.json(streamers);
 
  } catch (error) {
-  console.error('Error fetching streamers:', error);
+  console.error('Error fetching streamers:', error.red.bold);
   res.status(500).send('Server error');
  }
 });
@@ -69,14 +68,14 @@ app.get('/streamers/:streamerId', async (req, res) => {
   const query = { _id: new ObjectId(streamerId) }
   const streamer = await collection.findOne(query)
 
-  // if (!streamer) {
-  //  res.status(404).send('Streamer not found');
-  //  return;
-  // }
+  if (!streamer) {
+   res.status(404).send('Streamer not found');
+   return;
+  }
 
   res.send(streamer);
  } catch (error) {
-  console.error('Error retrieving streamer:', error);
+  console.error('Error retrieving streamer:', error.red.bold);
   res.status(500).send('Server error');
  }
 });
@@ -101,12 +100,12 @@ app.put('/streamers/:streamerId/vote', async (req, res) => {
 
   res.status(200).send('Vote recorded');
  } catch (error) {
-  console.error('Error voting for streamer:', error);
+  console.error('Error voting for streamer:', error.red.bold);
   res.status(500).send('Server error');
  }
 });
 
 // Start the server
 app.listen(port, () => {
- console.log(`Server is running on port ${port}`);
+ console.log(`Server is running on port ${port}`.cyan.bold);
 });
